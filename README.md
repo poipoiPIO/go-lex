@@ -3,7 +3,7 @@
 </h2>
 
 ![](https://github.com/poipoiPIO/go-lex/actions/workflows/on-push.yml/badge.svg)
-
+[![Go Reference](https://pkg.go.dev/badge/github.com/poipoiPIO/go-lex.svg)](https://pkg.go.dev/github.com/poipoiPIO/go-lex)
 
 ## Example:
 ```go
