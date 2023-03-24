@@ -16,8 +16,8 @@ func (this *Token) String() string {
 }
 
 type Expression struct {
-	Matcher *regexp.Regexp
-	Tag     string
+	matcher *regexp.Regexp
+	tag     string
 }
 
 type Lexer struct {
@@ -35,7 +35,7 @@ func InitLexExprs(exprs [][]string) (tokens []Expression, err error) {
 		}
 
 		tokens = append(
-			tokens, Expression{Matcher: matcher, Tag: tokName})
+			tokens, Expression{matcher: matcher, tag: tokName})
 	}
 
 	return
@@ -60,7 +60,7 @@ func (this *Lexer) Lex(in string) (tokens []Token, err error) {
 		nextTokPos := 0
 
 		for _, exp := range this.Expressions {
-			matcher, tag := exp.Matcher, exp.Tag
+			matcher, tag := exp.matcher, exp.tag
 
 			if isTokAtStart(in, matcher) {
 				match = true
