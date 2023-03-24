@@ -1,6 +1,9 @@
 <h2 align="center">
-  Go-lex : Really simple zero-dependency universal lexing library for Golang 
+  Go-lex : Simple zero-dependency universal lexing library for Golang</br>
 </h2>
+
+![](https://github.com/poipoiPIO/go-lex/actions/workflows/on-push.yml/badge.svg)
+
 
 ## Example:
 ```go
