@@ -19,5 +19,8 @@ jobs:
       - name: Build lib
         run: go build -v ./...
 
+      - name: Format code
+        run: go fmt *.go
+
       - name: Run test
         run: go test
