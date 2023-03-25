@@ -8,24 +8,13 @@
 ## Example:
 ```go
 func main() {
-  // Lexing rules are represented as the slice of
-  // Pairs that looks like: {"regex string", "token tag"}
-  var exprs, _ = InitLexExprs([][]string{
+  var lexer, _ = InitLexer([][]string{
     {"[0-9]+", "INT"},
     {"[ |\n|\t]+", "IGNORE"},
-  })
+  }, "IGNORE")
   
-  // Lexer initialization function takes two arguments
-  // First argument:  ignoring token tag
-  // Second argument: Lexing rules output of InitLexExprs()
-  lexer := InitLexer("IGNORE", exprs)
+  somethingToLex := "   123 \n123"
   
-  somethingToLex := "   123 \n123" // an string to lex
-  
-  // Lexer.Lex() function doing lexing
-  // For provided string, and returns result
-  // In form of Lex.Token slice, or error
-  // In case of failure
   var out, _ = lexer.Lex(somethingToLex)
   
   // out is:
@@ -36,14 +25,9 @@ func main() {
 ## API Reference:
 ### Data structures:
 ##### Lexer:
-> type Lexer struct { Expressions []Expression, IgnoreTokName string }
+> type Lexer struct { Expressions []expression, IgnoreTokName string }
 
 Struct representing lexer type of library.
-
-##### Expression:
-> type Expression struct { matcher *Regexp, tag string }
-
-Struct representing type of lexing rules for the `Lexer` purposes.
 
 ##### Token:
 > type Token struct { Value string, Tag string }
@@ -51,19 +35,14 @@ Struct representing type of lexing rules for the `Lexer` purposes.
 Token struct are using to represent the result of lexing in user-friendly manier.
 
 ### Functions and methods:
-#### InitLexExprs:
-> func InitLexExprs(rules [][]string) ([]Expression, error)
-
-Function needed to initialize lexing rules before lexer initialization.
-It takes rules in form of the {"Rule Regexp", "Tag name"} pair slice and
-returns the slice of rules for lexer.
-
 #### InitLexer:
-> func InitLexExprs(ignoreTag string, rules []Expression) *Lexer
+> func InitLexExprs(rules [][]string, ignoreTag string) (*Lexer, error)
 
 Function needed to initialize lexer.
-It takes the tag ignored to lexer and lexing rules from `InitLexExprs` function.
-And returns the instance of `Lexer` struct needed to provide lexing service.
+It takes the tag ignored to lexer and lexing rules 
+represented as the slice of pairs `{ "regexp", "token tag" }`.
+And returns the instance of `Lexer` struct needed to provide lexing service 
+or the error in case of an error.
 
 #### Lexer.Lex:
 > func (*Lexer) Lex(input string) ([]Token, error)
