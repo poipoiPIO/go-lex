@@ -9,18 +9,20 @@ import (
 var testLexer *Lexer = nil
 
 func TestInit(t *testing.T) {
-	var exprs, err = InitLexExprs([][]string{
-		{"[0-9]+", "INT"},
-		{"\"(.*?)\"", "STRING"},
-		{"[ |\n|\t]+", "IGNORE"},
-	})
+	var exprs, err = InitLexer([][]string{
+      {"[0-9]+", "INT"},
+      {"\"(.*?)\"", "STRING"},
+      {"[ |\n|\t]+", "IGNORE"},
+    }, // the slice of the lexing rules
+    "IGNORE", // Ignored tokens
+  )
 
 	if err != nil {
 		t.Errorf("Initialization error: %s", err)
 	}
 
 	t.Logf("[STATUS] :: SUCCESS\n")
-	testLexer = InitLexer("IGNORE", exprs)
+	testLexer = exprs
 }
 
 type TestCase struct {

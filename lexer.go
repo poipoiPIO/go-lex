@@ -6,6 +6,9 @@ import (
 	"regexp"
 )
 
+// Token type represents the lexing result's token.
+// Value : string with the resulting value matched by the lexer.
+// Tag : the name of tag of the token represented as string.
 type Token struct {
 	Value string
 	Tag   string
@@ -15,17 +18,17 @@ func (this *Token) String() string {
 	return fmt.Sprintf("<Token: val: %s | tag: %s>", this.Value, this.Tag)
 }
 
-type Expression struct {
+type expression struct {
 	matcher *regexp.Regexp
 	tag     string
 }
 
 type Lexer struct {
-	Expressions   []Expression
+	Expressions   []expression
 	IgnoreTokName string
 }
 
-func InitLexExprs(exprs [][]string) (tokens []Expression, err error) {
+func initLexExprs(exprs [][]string) (tokens []expression, err error) {
 	for _, tok := range exprs {
 		regex, tokName := tok[0], tok[1]
 		matcher, err := regexp.Compile(regex)
@@ -35,20 +38,32 @@ func InitLexExprs(exprs [][]string) (tokens []Expression, err error) {
 		}
 
 		tokens = append(
-			tokens, Expression{matcher: matcher, tag: tokName})
+			tokens, expression{matcher: matcher, tag: tokName})
 	}
 
 	return
 }
 
-func InitLexer(ignore string, exprs []Expression) *Lexer {
-	lex := new(Lexer)
-	*lex = Lexer{Expressions: exprs, IgnoreTokName: ignore}
-	return lex
+// Lexer initialization function, provides human interface for
+// creating lexers. it returns the new Lexer instance
+// or error in case of an error.
+// rules : slice of pairs { "regexp", "token tag name" } representing
+// lexing rules of new lexer instance.
+// ignore: the name of tag to be ignored by the lexer.
+func InitLexer(rules [][]string, ignore string) (*Lexer, error) {
+  e, err := initLexExprs(rules)
+
+  if err != nil {
+    return nil, err
+  }
+
+  lex := Lexer{Expressions: e, IgnoreTokName: ignore}
+	return &lex, nil
 }
 
 func isTokAtStart(in string, matcher *regexp.Regexp) bool {
-	return matcher.FindStringIndex(in) != nil && matcher.FindStringIndex(in)[0] == 0
+	return matcher.FindStringIndex(in) != nil &&
+    matcher.FindStringIndex(in)[0] == 0
 }
 
 func tryMatch(in string, matcher *regexp.Regexp) (string, int, bool) {
@@ -74,6 +89,10 @@ func throwIllegalTokenErr(in string, pos int) error {
 	return errors.New(errorMsg)
 }
 
+// Method that provides lexing facilities for the string.
+// Returns the slice of tokens as the result of lexing
+// or error in case of something went wrong.
+// in: string representing the lexer's input
 func (this *Lexer) Lex(in string) (tokens []Token, err error) {
 	position := 0
 
